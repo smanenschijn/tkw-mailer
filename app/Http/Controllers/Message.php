@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Jobs\ProcessEmail;
 use App\Mail\Mailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,10 +16,9 @@ class Message extends Controller
     {
         try {
             $messageData = json_decode($request->getContent(), true);
-            $mailer = new Mailer();
-            $response = $mailer->send(new \App\Mail\Message($messageData));
+            ProcessEmail::dispatch(new \App\Mail\Message($messageData));
 
-            return response()->json(['success' => true, 'response' => $response]);
+            return response()->json(['success' => true]);
 
         } catch (ValidationException $validationException) {
             return response()->json(['errors' => 'incomplete data'], 500);
