@@ -40,8 +40,29 @@ class Message
         $this->body = $messageData['body'];
     }
 
-    public function send()
+    /**
+     * @return string
+     */
+    public function getSubject()
     {
-
+        return $this->subject;
     }
+
+    /**
+     * @return array
+     */
+    public function getRecipients()
+    {
+        return $this->recipients;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+
 }
