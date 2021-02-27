@@ -15,15 +15,7 @@ class Message extends Controller
         try {
             $messageData = json_decode($request->getContent(), true);
 
-            $validator = Validator::make($messageData, [
-                'recipients' => 'required|array',
-                'subject' => 'required',
-                'body' => 'required'
-            ]);
-
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
+            $message = new \App\Mail\Message($messageData);
 
             return response()->json(['success' => true]);
 
