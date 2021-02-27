@@ -4,36 +4,45 @@ namespace App\Mail\Services;
 
 use App\Exceptions\ServiceFailedException;
 use App\Mail\Message;
-use Appp\Mail\Services\ServiceInterface;
+use App\Mail\Services\ServiceInterface;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SendGrid implements ServiceInterface {
 
 
-    public function sendMessage(Message $message, string $recipient)
+    public function sendMessage(Message $message)
     {
         try {
 
-            $response = Http::timeout(10)
+            $response = Http::timeout(60)
                 ->withHeaders([
-                    'Authorization' => config('tkw-mailer.services.sendgrid.url')
+                    'Authorization' => config('tkw-mailer.services.sendgrid.token')
                 ])
                 ->post(config('tkw-mailer.services.sendgrid.url'), [
                     'personalizations' => [
-                        'to' => ['email' => $recipient],
+                            ['to' => $this->formatRecipients($message->getRecipients())],
+                        ],
                         'from' => ['email' => config('tkw-mailer.settings.email.from')],
                         'subject' => $message->getSubject(),
-                        'content' => [
+                        'content' => [[
                             'type' => 'text/html',
                             'value' => $message->getBody()
-                        ]
-                    ]
+                        ]]
                 ]);
 
-            return json_decode($response->body());
+            return json_decode($response->body(), true);
 
         } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
             throw new ServiceFailedException();
         }
+    }
+
+    private function formatRecipients($recipients = [])
+    {
+        return array_map(function ($recipient) {
+            return ['email' => $recipient];
+        }, $recipients);
     }
 }

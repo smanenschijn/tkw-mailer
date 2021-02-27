@@ -1,10 +1,10 @@
 <?php
 
-namespace Appp\Mail\Services;
+namespace App\Mail\Services;
 
 use App\Mail\Message;
 
 interface ServiceInterface
 {
-    public function sendMessage(Message $message, string $recipient);
+    public function sendMessage(Message $message);
 }
