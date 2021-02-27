@@ -1,28 +1,28 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
-class CreateMessageResponseTestTest extends TestCase
+class ServicesTestTest extends TestCase
 {
     /**
      * Tests if api throws an error when no recipients are sent
      *
      * @return void
      */
-    public function test_returns_an_error_when_message_data_fails_to_validate()
+    public function test_throws_an_exception_when_failed_to_send()
     {
-        $messageData = [
-            'subject' => 'default subject',
-            'body' => 'default_body'
-        ];
+        // @todo implement test
+        $this->assertTrue(true);
+    }
 
-        $response = $this->postJson('/api/email/message', $messageData);
-
-        $response->assertStatus(500);
+    public function test_falls_back_on_another_service_when_sending_fails()
+    {
+        // @todo implement test;
+        $this->assertTrue(true);
     }
 
 
