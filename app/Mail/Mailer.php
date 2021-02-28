@@ -17,7 +17,7 @@ class Mailer
      * Sends a message with availability of several services in mind
      *
      * @param Email $email
-     * @return string[]
+     * @return boolean
      */
     public function send(Email $email)
     {
@@ -29,14 +29,24 @@ class Mailer
             foreach (config('tkw-mailer.services') as $index => $service) {
 
                 try {
+                    $serviceName = config(sprintf('tkw-mailer.services.%s.name', $index));
+
                     if ($limiter->tooManyAttempts($index, $threshold)) {
-                        throw new ServiceUnavailableException('Service %s is currently unavailable because of too many failed attempts',config(sprintf('tkw-mailer.services.%s.name', $index)));
+                        throw new ServiceUnavailableException(sprintf('Service %s is currently unavailable because of too many failed attempts', $serviceName));
                     }
                     /* @var ServiceInterface $mailService */
                     $serviceClass = config(sprintf('tkw-mailer.services.%s.class', $index));
                     $mailService = new $serviceClass;
 
-                    return $mailService->sendMessage($email);
+                    $mailService->sendMessage($email);
+
+                    $email->save([
+                        'status' => 1
+                    ]);
+
+                    Log::info(sprintf('Email with subject: %s was sent with service %s', $email->subject, $serviceName));
+
+                    return true;
 
                 } catch (ServiceFailedException $e) {
                     $limiter->hit($index, Carbon::now()->addMinutes(15));
