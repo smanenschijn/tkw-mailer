@@ -3,7 +3,6 @@
 namespace App\Mail\Services;
 
 use App\Exceptions\ServiceFailedException;
-use App\Mail\Message;
 use App\Mail\Services\ServiceInterface;
 use App\Models\Email;
 use Illuminate\Support\Facades\Http;
@@ -20,7 +19,7 @@ class SendGrid implements ServiceInterface {
                 ->withHeaders([
                     'Authorization' => config('tkw-mailer.services.sendgrid.token')
                 ])
-                ->post(config('tkw-mailer.services.sendgrid.url'), [
+                ->post(config('tkw-mailer.services.sendgrid.url') . 'a', [
                     'personalizations' => [
                             ['to' => $this->formatRecipients($email->recipients)],
                         ],
@@ -30,13 +29,13 @@ class SendGrid implements ServiceInterface {
                             'type' => 'text/html',
                             'value' => $email->body
                         ]]
-                ]);
+                ])->throw();
 
             return json_decode($response->body(), true);
 
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
-            throw new ServiceFailedException();
+            throw new ServiceFailedException('Failed to send email with Sendgrid');
         }
     }
 
