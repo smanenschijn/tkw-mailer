@@ -61,7 +61,7 @@ class Mailer
 
         } catch (AllServicesFailedException $e) {
             Log::error('All services unavailable at this time');
-            return ['error' => 'All services unavailable at this time'];
+            return false;
         }
     }
 }

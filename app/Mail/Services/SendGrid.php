@@ -19,7 +19,7 @@ class SendGrid implements ServiceInterface {
                 ->withHeaders([
                     'Authorization' => config('tkw-mailer.services.sendgrid.token')
                 ])
-                ->post(config('tkw-mailer.services.sendgrid.url') . 'a', [
+                ->post(config('tkw-mailer.services.sendgrid.url'), [
                     'personalizations' => [
                             ['to' => $this->formatRecipients($email->recipients)],
                         ],
