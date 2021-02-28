@@ -6,7 +6,7 @@ return [
             'name' => 'MailJet',
             'class' => \App\Mail\Services\MailJet::class,
             'url' => env('MAILJET_API_URL'),
-            'username' => env('MAILJET_API_USER'),
+            'username' => env('MAILJET_API_USERNAME'),
             'password' => env('MAILJET_API_PASSWORD')
         ],
         'sendgrid' => [

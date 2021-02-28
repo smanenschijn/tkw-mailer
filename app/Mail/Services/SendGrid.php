@@ -15,7 +15,7 @@ class SendGrid implements ServiceInterface {
     {
         try {
 
-            $response = Http::timeout(60)
+            $response = Http::timeout(10)
                 ->withHeaders([
                     'Authorization' => config('tkw-mailer.services.sendgrid.token')
                 ])

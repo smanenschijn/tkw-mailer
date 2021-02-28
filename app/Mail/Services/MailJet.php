@@ -26,8 +26,7 @@ class MailJet implements ServiceInterface
                         "To" => $this->formatRecipients($email->recipients),
                         "Subject" => $email->subject,
                         "TextPart" => $email->body,
-                        "HTMLPart" => $email->body,
-                        "CustomID"=> "AppGettingStartedTest"
+                        "HTMLPart" => $email->body
                     ]
                 ]
             ])->throw();
