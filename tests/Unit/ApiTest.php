@@ -28,6 +28,9 @@ class ApiTest extends TestCase
     }
 
 
+    /**
+     * Tests if an email is saved to the database after receiving a correctly formatted json
+     */
     public function test_it_saves_a_record_to_the_database_when_a_correct_json_is_delivered()
     {
         $messageData = [
