@@ -7,11 +7,18 @@ return [
             'class' => \App\Mail\Services\SendGrid::class,
             'url' => env('SENDGRID_API_URL'),
             'token' => sprintf('Bearer %s', env('SENDGRID_API_TOKEN'))
+        ],
+        'mailjet' => [
+            'name' => 'MailJet',
+            'class' => \App\Mail\Services\MailJet::class,
+            'url' => env('MAILJET_API_URL'),
+            'user' => env('MAILJET_API_USER')
         ]
     ],
     'settings' => [
         'email' => [
-            'from' => env('TKW_MAILER_FROM')
+            'from' => env('TKW_MAILER_FROM'),
+            'name' => env('TKW_MAILER_FROM_NAME')
         ],
         'rate_limiter' => [
             'threshold' => env('TKW_MAILER_THRESHOLD')
