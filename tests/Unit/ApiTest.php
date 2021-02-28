@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
-class CreateMessageResponseTestTest extends TestCase
+class ApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Tests if api throws an error when no recipients are sent
      *
@@ -26,5 +28,19 @@ class CreateMessageResponseTestTest extends TestCase
     }
 
 
+    public function test_it_saves_a_record_to_the_database_when_a_correct_json_is_delivered()
+    {
+        $messageData = [
+            'recipients' => ['test@example.com'],
+            'subject' => 'default subject',
+            'body' => 'default_body'
+        ];
+
+        Http::fake();
+
+        $this->postJson('/api/email/message', $messageData);
+
+        $this->assertDatabaseCount('emails', 1);
+    }
 
 }

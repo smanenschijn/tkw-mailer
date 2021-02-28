@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
-class ServicesTestTest extends TestCase
+class ServicesTest extends TestCase
 {
     /**
      * Tests if api throws an error when no recipients are sent
