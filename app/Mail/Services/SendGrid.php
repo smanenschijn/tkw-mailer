@@ -23,7 +23,7 @@ class SendGrid implements ServiceInterface {
                     'personalizations' => [
                             ['to' => $this->formatRecipients($email->recipients)],
                         ],
-                        'from' => ['email' => config('tkw-mailer.settings.email.from')],
+                        'from' => ['email' => config('tkw-mailer.settings.email.from'), 'name' => config('tkw-mailer.settings.email.from')],
                         'subject' => $email->subject,
                         'content' => [[
                             'type' => 'text/html',
