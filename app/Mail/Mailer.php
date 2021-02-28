@@ -6,6 +6,7 @@ use App\Exceptions\AllServicesFailedException;
 use App\Exceptions\ServiceFailedException;
 use App\Exceptions\ServiceUnavailableException;
 use App\Mail\Services\ServiceInterface;
+use App\Models\Email;
 use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Log;
@@ -15,10 +16,10 @@ class Mailer
     /**
      * Sends a message with availability of several services in mind
      *
-     * @param Message $message
+     * @param Email $email
      * @return string[]
      */
-    public function send(Message $message)
+    public function send(Email $email)
     {
         $limiter = app(RateLimiter::class);
         $threshold = config('tkw-mailer.config.threshold');
@@ -35,7 +36,7 @@ class Mailer
                     $serviceClass = config(sprintf('tkw-mailer.services.%s.class', $index));
                     $mailService = new $serviceClass;
 
-                    return $mailService->sendMessage($message);
+                    return $mailService->sendMessage($email);
 
                 } catch (ServiceFailedException $e) {
                     $limiter->hit($index, Carbon::now()->addMinutes(15));

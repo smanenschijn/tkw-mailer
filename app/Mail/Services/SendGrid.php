@@ -5,13 +5,14 @@ namespace App\Mail\Services;
 use App\Exceptions\ServiceFailedException;
 use App\Mail\Message;
 use App\Mail\Services\ServiceInterface;
+use App\Models\Email;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SendGrid implements ServiceInterface {
 
 
-    public function sendMessage(Message $message)
+    public function sendMessage(Email $email)
     {
         try {
 
@@ -21,13 +22,13 @@ class SendGrid implements ServiceInterface {
                 ])
                 ->post(config('tkw-mailer.services.sendgrid.url'), [
                     'personalizations' => [
-                            ['to' => $this->formatRecipients($message->getRecipients())],
+                            ['to' => $this->formatRecipients($email->recipients)],
                         ],
                         'from' => ['email' => config('tkw-mailer.settings.email.from')],
-                        'subject' => $message->getSubject(),
+                        'subject' => $email->subject,
                         'content' => [[
                             'type' => 'text/html',
-                            'value' => $message->getBody()
+                            'value' => $email->body
                         ]]
                 ]);
 
