@@ -29,13 +29,14 @@ class Message extends Controller
             }
 
             $email = Email::create($messageData);
-
             ProcessEmail::dispatch($email);
 
             return response()->json(['success' => true]);
 
         } catch (ValidationException $validationException) {
-            return response()->json(['errors' => 'incomplete data'], 500);
+            return response()->json(['errors' => 'message doesn\'t have the correct format'], 500);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => 'failed to create email message'], 500);
         }
 
     }
