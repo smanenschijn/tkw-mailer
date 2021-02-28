@@ -14,7 +14,7 @@ class MailJet implements ServiceInterface
     public function sendMessage(Email $email)
     {
         try {
-            $response = Http::timeout(10)->withBasicAuth('bb8aec6901629b4a034002e3b35f4d6a', '00e7a70928e87e44852d1ee100e0b2df')
+            $response = Http::timeout(10)->withBasicAuth(config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
                 ->asJson()
                 ->post(config('tkw-mailer.services.mailjet.url'), [
                 'Messages' => [
