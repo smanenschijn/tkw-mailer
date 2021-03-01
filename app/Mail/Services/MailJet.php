@@ -67,7 +67,6 @@ class MailJet extends BaseService implements ServiceInterface
         } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 
             $this->rateLimiter->hit('mailjet', Carbon::now()->addMinutes(15));
-            Log::info('hit ratelimiter');
 
             throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
 
