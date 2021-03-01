@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Log;
 
-class Mailer
+class Mailer implements MailerInterface
 {
     /**
      * Sends a message with availability of several services in mind
@@ -19,7 +19,7 @@ class Mailer
      * @param Email $email
      * @return boolean
      */
-    public function send(Email $email)
+    public function send(Email $email) : bool
     {
         $limiter = app(RateLimiter::class);
         $threshold = config('tkw-mailer.config.threshold');
