@@ -2,6 +2,7 @@
 
 return [
     'services' => [
+        'default' => \App\Mail\Services\MailJet::class,
         'mailjet' => [
             'name' => 'MailJet',
             'class' => \App\Mail\Services\MailJet::class,

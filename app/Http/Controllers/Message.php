@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Jobs\ProcessEmail;
-use App\Models\Email;
-use app\Repositories\EmailRepository;
+use App\Events\MessageCreated;
 use App\Repositories\EmailRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +40,7 @@ class Message extends Controller
             }
 
             $email = $this->emailRepository->create($messageData);
-            ProcessEmail::dispatch($email);
+            MessageCreated::dispatch($email->id);
 
             return response()->json(['success' => true]);
 

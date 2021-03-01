@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\Mailer;
-use app\Mail\MailerInterface;
+use App\Mail\MailerInterface;
 use App\Models\Email;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -11,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProcessEmail implements ShouldQueue
 {
@@ -19,7 +19,7 @@ class ProcessEmail implements ShouldQueue
     /**
      * @var Email
      */
-    private $email;
+    private $emailId;
     /**
      * @var MailerInterface
      */
@@ -28,12 +28,11 @@ class ProcessEmail implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Email $email
-     * @param MailerInterface $mailer
+     * @param int $emailId
      */
-    public function __construct(Email $email)
+    public function __construct(int $emailId)
     {
-        $this->email = $email;
+        $this->emailId = $emailId;
     }
 
     /**
@@ -44,6 +43,7 @@ class ProcessEmail implements ShouldQueue
      */
     public function handle(MailerInterface $mailer)
     {
-        $mailer->send($this->email);
+        Log::info('Send Job!');
+        $mailer->send($this->emailId);
     }
 }
