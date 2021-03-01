@@ -3,11 +3,12 @@
 namespace App\Mail\Services;
 
 use App\Events\MessageSent;
-use App\Exceptions\ServiceFailedException;
 use App\Exceptions\ServiceUnavailableException;
 use App\Repositories\EmailRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
+use Illuminate\Http\Client\HttpClientException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -21,6 +22,7 @@ class MailJet extends BaseService implements ServiceInterface
     /**
      * MailJet constructor.
      * @param SendGridInterface $sendGrid
+     * @param RateLimiter $rateLimiter
      * @param EmailRepositoryInterface $emailRepository
      */
     public function __construct(SendGridInterface $sendGrid, RateLimiter $rateLimiter, EmailRepositoryInterface $emailRepository)
@@ -41,7 +43,7 @@ class MailJet extends BaseService implements ServiceInterface
                 throw new ServiceUnavailableException('Service MailJet is currently unavailable because of too many failed attempts');
             }
 
-            Http::timeout(10)->withBasicAuth('1' . config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
+            Http::timeout(10)->withBasicAuth(config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
                 ->asJson()
                 ->post(config('tkw-mailer.services.mailjet.url'), [
                     'Messages' => [
@@ -62,9 +64,10 @@ class MailJet extends BaseService implements ServiceInterface
 
             return true;
 
-        } catch (ServiceUnavailableException $serviceUnavailableException) {
+        } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 
             $this->rateLimiter->hit('mailjet', Carbon::now()->addMinutes(15));
+            Log::info('hit ratelimiter');
 
             throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
 
@@ -83,7 +86,6 @@ class MailJet extends BaseService implements ServiceInterface
 
     public function fallback(int $emailId) : bool
     {
-        Log::info('fallback');
         return $this->sendGrid->sendMessage($emailId);
     }
 }

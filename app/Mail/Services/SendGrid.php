@@ -9,6 +9,8 @@ use App\Exceptions\ServiceUnavailableException;
 use App\Repositories\EmailRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
+use Illuminate\Http\Client\HttpClientException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -17,7 +19,7 @@ class SendGrid extends BaseService implements SendGridInterface {
     public function sendMessage(int $emailId)
     {
         try {
-            Log::info('SendGrid');
+
             $email = $this->getEmail($emailId);
             $threshold = config('tkw-mailer.config.threshold');
 
@@ -45,7 +47,7 @@ class SendGrid extends BaseService implements SendGridInterface {
 
             return true;
 
-        } catch (ServiceUnavailableException $serviceUnavailableException) {
+        } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 
             $this->rateLimiter->hit('sendgrid', Carbon::now()->addMinutes(15));
 
