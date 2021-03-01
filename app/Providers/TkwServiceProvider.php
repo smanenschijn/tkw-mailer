@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Mail\Mailer;
-use app\Mail\MailerInterface;
+use App\Mail\MailerInterface;
+use App\Repositories\BaseRepository;
+use App\Repositories\EloquentRepositoryInterface;
+use App\Repositories\EmailRepository;
+use App\Repositories\EmailRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class TkwServiceProvider extends ServiceProvider
@@ -16,6 +20,8 @@ class TkwServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(MailerInterface::class, Mailer::class);
+        $this->app->bind(EloquentRepositoryInterface::class, BaseRepository::class);
+        $this->app->bind(EmailRepositoryInterface::class, EmailRepository::class);
     }
 
     /**
