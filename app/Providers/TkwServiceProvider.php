@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use App\Mail\Mailer;
 use App\Mail\MailerInterface;
+use App\Mail\Services\MailJet;
+use App\Mail\Services\MailJetInterface;
+use App\Mail\Services\SendGrid;
+use App\Mail\Services\SendGridInterface;
+use App\Mail\Services\ServiceInterface;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepositoryInterface;
 use App\Repositories\EmailRepository;
@@ -22,6 +27,9 @@ class TkwServiceProvider extends ServiceProvider
         $this->app->bind(MailerInterface::class, Mailer::class);
         $this->app->bind(EloquentRepositoryInterface::class, BaseRepository::class);
         $this->app->bind(EmailRepositoryInterface::class, EmailRepository::class);
+        $this->app->bind(SendGridInterface::class, SendGrid::class);
+        $this->app->bind(MailJetInterface::class, MailJet::class);
+        $this->app->bind(ServiceInterface::class, config('tkw-mailer.services.default', SendGrid::class));
     }
 
     /**
