@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Mail;
+namespace App\Mail;
 
 use App\Models\Email;
 
 interface MailerInterface
 {
-    public function send(Email $email) : bool;
+    public function send(int $email) : void;
 }

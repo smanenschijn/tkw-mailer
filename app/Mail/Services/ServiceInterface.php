@@ -2,9 +2,9 @@
 
 namespace App\Mail\Services;
 
-use App\Models\Email;
-
 interface ServiceInterface
 {
-    public function sendMessage(Email $email);
+    public function sendMessage(int $emailId);
+
+    public function fallback(int $emailId);
 }

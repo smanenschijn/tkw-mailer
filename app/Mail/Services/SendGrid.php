@@ -2,18 +2,28 @@
 
 namespace App\Mail\Services;
 
+use App\Events\MessageSent;
+use App\Exceptions\AllServicesFailedException;
 use App\Exceptions\ServiceFailedException;
-use App\Mail\Services\ServiceInterface;
-use App\Models\Email;
+use App\Exceptions\ServiceUnavailableException;
+use App\Repositories\EmailRepositoryInterface;
+use Carbon\Carbon;
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class SendGrid implements ServiceInterface {
+class SendGrid extends BaseService implements SendGridInterface {
 
-
-    public function sendMessage(Email $email)
+    public function sendMessage(int $emailId)
     {
         try {
+            Log::info('SendGrid');
+            $email = $this->getEmail($emailId);
+            $threshold = config('tkw-mailer.config.threshold');
+
+            if ($this->rateLimiter->tooManyAttempts('sendgrid', $threshold)) {
+                throw new ServiceUnavailableException('Service SendGrid is currently unavailable because of too many failed attempts');
+            }
 
             $response = Http::timeout(10)
                 ->withHeaders([
@@ -31,11 +41,19 @@ class SendGrid implements ServiceInterface {
                         ]]
                 ])->throw();
 
-            return json_decode($response->body(), true);
+            MessageSent::dispatch($emailId, 'SendGrid');
+
+            return true;
+
+        } catch (ServiceUnavailableException $serviceUnavailableException) {
+
+            $this->rateLimiter->hit('sendgrid', Carbon::now()->addMinutes(15));
+
+            throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
 
         } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-            throw new ServiceFailedException('Failed to send email with Sendgrid');
+            Log::info($exception->getMessage());
+            $this->fallback();
         }
     }
 
@@ -44,5 +62,10 @@ class SendGrid implements ServiceInterface {
         return array_map(function ($recipient) {
             return ['email' => $recipient];
         }, $recipients);
+    }
+
+    public function fallback(int $emailId)
+    {
+        throw new AllServicesFailedException();
     }
 }
