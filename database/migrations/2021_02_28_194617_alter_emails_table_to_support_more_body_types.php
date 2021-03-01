@@ -14,8 +14,8 @@ class AlterEmailsTableToSupportMoreBodyTypes extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->text('body_markdown')->after('body');
-            $table->text('body_text')->after('body_markdown');
+            $table->text('body_markdown')->after('body')->nullable();
+            $table->text('body_text')->after('body_markdown')->nullable();
         });
     }
 
