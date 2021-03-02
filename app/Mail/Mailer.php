@@ -36,6 +36,13 @@ class Mailer implements MailerInterface
      */
     public function send(int $emailId) : void
     {
-        $this->service->sendMessage($emailId);
+        try {
+            $this->service->sendMessage($emailId);
+        } catch (AllServicesFailedException $allServicesFailedException) {
+
+            throw new AllServicesFailedException($allServicesFailedException->getMessage());
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+        }
     }
 }
