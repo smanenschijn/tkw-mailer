@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\AllServicesFailedException;
 use App\Mail\MailerInterface;
 use App\Models\Email;
 use Illuminate\Bus\Queueable;
@@ -43,7 +44,15 @@ class ProcessEmail implements ShouldQueue
      */
     public function handle(MailerInterface $mailer)
     {
-        Log::info('Send Job!');
-        $mailer->send($this->emailId);
+        try {
+            $mailer->send($this->emailId);
+        } catch (AllServicesFailedException $allServicesFailedException) {
+            $this->release(60);
+        }
+    }
+
+    public function retryUntil()
+    {
+        return now()->addMinutes(60);
     }
 }

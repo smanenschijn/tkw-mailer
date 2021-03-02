@@ -40,19 +40,18 @@ class MailJet extends BaseService implements ServiceInterface
         return static::SERVICE_IDENTIFIER;
     }
 
+    /**
+     * @param int $emailId
+     * @return string
+     * @throws ServiceUnavailableException
+     */
     public function sendMessage(int $emailId) : string
     {
         try {
             $email = $this->getEmail($emailId);
-            $threshold = config('tkw-mailer.config.threshold');
-
-            if ($this->rateLimiter->tooManyAttempts('mailjet', $threshold)) {
-                throw new ServiceUnavailableException('Service MailJet is currently unavailable because of too many failed attempts');
-            }
-
             $response = Http::timeout(10)->withBasicAuth(config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
                 ->asJson()
-                ->post(config('tkw-mailer.services.mailjet.url') . 'a', [
+                ->post(config('tkw-mailer.services.mailjet.url'), [
                     'Messages' => [
                         [
                             'From' => [
@@ -74,14 +73,10 @@ class MailJet extends BaseService implements ServiceInterface
             return $responseId;
 
         } catch (HttpClientException | HttpResponseException $serviceUnavailableException) {
+            Log::info('throw unavailable exception');
 
-            $this->rateLimiter->hit('mailjet', Carbon::now()->addMinutes(15));
-            return $this->fallback($emailId);
+            throw new ServiceUnavailableException($serviceUnavailableException->getMessage(), $this->getServiceIdentifier());
 
-            throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
-
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
         }
     }
 
@@ -92,8 +87,4 @@ class MailJet extends BaseService implements ServiceInterface
         }, $recipients);
     }
 
-    public function fallback(int $emailId) : bool
-    {
-        return $this->sendGrid->sendMessage($emailId);
-    }
 }

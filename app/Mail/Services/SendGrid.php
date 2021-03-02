@@ -23,16 +23,16 @@ class SendGrid extends BaseService implements SendGridInterface {
         return static::SERVICE_IDENTIFIER;
     }
 
+    /**
+     * @param int $emailId
+     * @return string
+     * @throws ServiceUnavailableException
+     */
     public function sendMessage(int $emailId) : string
     {
         try {
 
             $email = $this->getEmail($emailId);
-            $threshold = config('tkw-mailer.config.threshold');
-
-            if ($this->rateLimiter->tooManyAttempts('sendgrid', $threshold)) {
-                throw new ServiceUnavailableException('Service SendGrid is currently unavailable because of too many failed attempts');
-            }
 
             $response = Http::timeout(10)
                 ->withHeaders([
@@ -60,13 +60,8 @@ class SendGrid extends BaseService implements SendGridInterface {
 
         } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 
-            $this->rateLimiter->hit('sendgrid', Carbon::now()->addMinutes(15));
+            throw new ServiceUnavailableException($serviceUnavailableException->getMessage(), $this->getServiceIdentifier());
 
-            throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
-
-        } catch (\Exception $exception) {
-            Log::info($exception->getMessage());
-            $this->fallback();
         }
     }
 
@@ -75,10 +70,5 @@ class SendGrid extends BaseService implements SendGridInterface {
         return array_map(function ($recipient) {
             return ['email' => $recipient];
         }, $recipients);
-    }
-
-    public function fallback(int $emailId)
-    {
-        throw new AllServicesFailedException();
     }
 }

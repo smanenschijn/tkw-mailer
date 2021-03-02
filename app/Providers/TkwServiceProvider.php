@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Fallback\CircuitBreaker;
+use App\Fallback\CircuitBreakerInterface;
 use App\Mail\Mailer;
 use App\Mail\MailerInterface;
 use App\Mail\Services\MailJet;
@@ -29,7 +31,7 @@ class TkwServiceProvider extends ServiceProvider
         $this->app->bind(EmailRepositoryInterface::class, EmailRepository::class);
         $this->app->bind(SendGridInterface::class, SendGrid::class);
         $this->app->bind(MailJetInterface::class, MailJet::class);
-        $this->app->bind(ServiceInterface::class, config('tkw-mailer.services.default', SendGrid::class));
+        $this->app->bind(CircuitBreakerInterface::class, CircuitBreaker::class);
     }
 
     /**

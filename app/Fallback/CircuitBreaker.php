@@ -24,7 +24,7 @@ class CircuitBreaker implements CircuitBreakerInterface
 
     public function isAvailable(string $serviceIdentifier): bool
     {
-        return $this->rateLimiter->tooManyAttempts($serviceIdentifier, config('tkw-mailer.config.threshold'));
+        return $this->rateLimiter->tooManyAttempts($serviceIdentifier, config('tkw-mailer.config.threshold')) === false;
     }
 
     public function registerFailedAttempt(string $serviceIdentifier): void
