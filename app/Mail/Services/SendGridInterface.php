@@ -2,4 +2,6 @@
 
 namespace App\Mail\Services;
 
-interface SendGridInterface extends ServiceInterface {}
+interface SendGridInterface extends ServiceInterface
+{
+}

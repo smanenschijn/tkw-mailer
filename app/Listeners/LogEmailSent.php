@@ -29,7 +29,7 @@ class LogEmailSent
     /**
      * Handle the event.
      *
-     * @param  MessageSent  $event
+     * @param MessageSent $event
      * @return void
      */
     public function handle(MessageSent $event)

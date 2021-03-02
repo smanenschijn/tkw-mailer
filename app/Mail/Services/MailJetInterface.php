@@ -2,4 +2,6 @@
 
 namespace App\Mail\Services;
 
-interface MailJetInterface extends ServiceInterface {}
+interface MailJetInterface extends ServiceInterface
+{
+}

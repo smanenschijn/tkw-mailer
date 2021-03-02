@@ -23,7 +23,7 @@ class BaseRepository implements EloquentRepositoryInterface
         return $this->model->create($attributes);
     }
 
-    public function update(int $id, array $attributes) : Model
+    public function update(int $id, array $attributes): Model
     {
         $model = $this->model->find($id);
         $model->update($attributes);

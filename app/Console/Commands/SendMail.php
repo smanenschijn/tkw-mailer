@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\MessageCreated;
 use App\Repositories\EmailRepositoryInterface;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -76,7 +77,7 @@ class SendMail extends Command
 
             $this->error('validation failed for message');
 
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
 
             Log::info($exception->getMessage());
 

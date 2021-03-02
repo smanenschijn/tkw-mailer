@@ -2,15 +2,11 @@
 
 namespace App\Mail;
 
-use App\Events\MessageSent;
 use App\Exceptions\AllServicesFailedException;
-use App\Exceptions\ServiceFailedException;
 use App\Exceptions\ServiceUnavailableException;
 use App\Fallback\CircuitBreakerInterface;
-use App\Mail\Services\MailJetInterface;
 use App\Mail\Services\ServiceInterface;
-use Carbon\Carbon;
-use Illuminate\Cache\RateLimiter;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class Mailer implements MailerInterface
@@ -37,7 +33,7 @@ class Mailer implements MailerInterface
      *
      * @throws AllServicesFailedException
      */
-    public function send(int $emailId) : string
+    public function send(int $emailId): string
     {
         try {
             foreach ($this->getServices() as $serviceIdentifier) {
@@ -60,18 +56,18 @@ class Mailer implements MailerInterface
 
             Log::error($allServicesFailedException->getMessage());
             throw new AllServicesFailedException($allServicesFailedException->getMessage());
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
 
             Log::error($exception->getMessage());
         }
     }
 
-    private function getServices() : array
+    private function getServices(): array
     {
         return config('tkw-mailer.settings.order');
     }
 
-    public function resolveService($identifier) : ServiceInterface
+    public function resolveService($identifier): ServiceInterface
     {
         return resolve(config(sprintf('tkw-mailer.services.%s.class', $identifier)));
     }

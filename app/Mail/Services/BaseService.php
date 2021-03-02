@@ -9,13 +9,13 @@ use Illuminate\Cache\RateLimiter;
 class BaseService
 {
     /**
-     * @var EmailRepositoryInterface
-     */
-    private EmailRepositoryInterface $emailRepository;
-    /**
      * @var RateLimiter
      */
     protected RateLimiter $rateLimiter;
+    /**
+     * @var EmailRepositoryInterface
+     */
+    private EmailRepositoryInterface $emailRepository;
 
     /**
      * BaseService constructor.
@@ -29,7 +29,7 @@ class BaseService
         $this->rateLimiter = $rateLimiter;
     }
 
-    protected function getEmail(int $emailId) : ?Email
+    protected function getEmail(int $emailId): ?Email
     {
         return $this->emailRepository->find($emailId);
     }

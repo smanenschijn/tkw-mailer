@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Events\MessageCreated;
 use App\Repositories\EmailRepositoryInterface;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +51,7 @@ class Message extends Controller
 
             return response()->json(['errors' => 'message doesn\'t have the correct format'], 500);
 
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
 
             Log::error($exception->getMessage());
 

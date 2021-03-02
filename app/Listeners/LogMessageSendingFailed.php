@@ -22,7 +22,7 @@ class LogMessageSendingFailed
     /**
      * Handle the event.
      *
-     * @param  MessageFailed  $event
+     * @param MessageFailed $event
      * @return void
      */
     public function handle(MessageFailed $event)

@@ -5,7 +5,6 @@ namespace App\Mail\Services;
 use App\Events\MessageSent;
 use App\Exceptions\ServiceUnavailableException;
 use App\Repositories\EmailRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -15,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class MailJet extends BaseService implements ServiceInterface
 {
 
-    const SERVICE_IDENTIFIER='mailjet';
+    const SERVICE_IDENTIFIER = 'mailjet';
 
     /**
      * @var SendGridInterface
@@ -35,17 +34,12 @@ class MailJet extends BaseService implements ServiceInterface
         parent::__construct($rateLimiter, $emailRepository);
     }
 
-    public function getServiceIdentifier(): string
-    {
-        return static::SERVICE_IDENTIFIER;
-    }
-
     /**
      * @param int $emailId
      * @return string
      * @throws ServiceUnavailableException
      */
-    public function sendMessage(int $emailId) : string
+    public function sendMessage(int $emailId): string
     {
         try {
             $email = $this->getEmail($emailId);
@@ -85,6 +79,11 @@ class MailJet extends BaseService implements ServiceInterface
         return array_map(function ($recipient) {
             return ['Email' => $recipient, 'Name' => $recipient];
         }, $recipients);
+    }
+
+    public function getServiceIdentifier(): string
+    {
+        return static::SERVICE_IDENTIFIER;
     }
 
 }
