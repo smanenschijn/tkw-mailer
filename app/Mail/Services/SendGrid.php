@@ -16,7 +16,14 @@ use Illuminate\Support\Facades\Log;
 
 class SendGrid extends BaseService implements SendGridInterface {
 
-    public function sendMessage(int $emailId)
+    const SERVICE_IDENTIFIER='sendgrid';
+
+    public function getServiceIdentifier(): string
+    {
+        return static::SERVICE_IDENTIFIER;
+    }
+
+    public function sendMessage(int $emailId) : string
     {
         try {
 
@@ -43,9 +50,13 @@ class SendGrid extends BaseService implements SendGridInterface {
                         ]]
                 ])->throw();
 
-            MessageSent::dispatch($emailId, 'SendGrid');
+            Log::info($response->header('X-Message-Id'));
 
-            return true;
+            $responseId = $response->header('X-Message-Id');
+
+            MessageSent::dispatch($emailId, $this->getServiceIdentifier(), $responseId);
+
+            return $responseId;
 
         } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 

@@ -32,6 +32,10 @@ class UpdateEmailStatus
      */
     public function handle(MessageSent $event)
     {
-        $this->emailRepository->update($event->getEmailId(), ['status' => 1]);
+        $this->emailRepository->update($event->getEmailId(), [
+            'status' => 1,
+            'sent_with_service' => $event->getServiceIdentifier(),
+            'service_identifier' => $event->getResponseId()
+        ]);
     }
 }

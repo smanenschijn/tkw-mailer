@@ -4,7 +4,9 @@ namespace App\Mail\Services;
 
 interface ServiceInterface
 {
-    public function sendMessage(int $emailId);
+    public function getServiceIdentifier() : string;
+
+    public function sendMessage(int $emailId) : string;
 
     public function fallback(int $emailId);
 }

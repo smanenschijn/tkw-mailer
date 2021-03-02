@@ -15,19 +15,22 @@ class MessageSent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     private int $emailId;
-    private string $serviceName;
+    private string $serviceIdentifier;
+    private string $responseId;
 
     /**
      * Create a new event instance.
      *
      * @param int $emailId
-     * @param string $serviceName
+     * @param string $serviceIdentifier
+     * @param string $responseId
      */
-    public function __construct(int $emailId, string $serviceName)
+    public function __construct(int $emailId, string $serviceIdentifier, string $responseId)
     {
 
         $this->emailId = $emailId;
-        $this->serviceName = $serviceName;
+        $this->serviceIdentifier = $serviceIdentifier;
+        $this->responseId = $responseId;
     }
 
     public function getEmailId()
@@ -35,9 +38,14 @@ class MessageSent
         return $this->emailId;
     }
 
-    public function getServiceName()
+    public function getServiceIdentifier()
     {
-        return $this->serviceName;
+        return $this->serviceIdentifier;
+    }
+
+    public function getResponseId()
+    {
+        return $this->responseId;
     }
 
 }

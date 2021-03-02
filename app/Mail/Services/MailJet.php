@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Log;
 
 class MailJet extends BaseService implements ServiceInterface
 {
+
+    const SERVICE_IDENTIFIER='mailjet';
+
     /**
      * @var SendGridInterface
      */
@@ -32,8 +35,12 @@ class MailJet extends BaseService implements ServiceInterface
         parent::__construct($rateLimiter, $emailRepository);
     }
 
+    public function getServiceIdentifier(): string
+    {
+        return static::SERVICE_IDENTIFIER;
+    }
 
-    public function sendMessage(int $emailId)
+    public function sendMessage(int $emailId) : string
     {
         try {
             $email = $this->getEmail($emailId);
@@ -43,9 +50,9 @@ class MailJet extends BaseService implements ServiceInterface
                 throw new ServiceUnavailableException('Service MailJet is currently unavailable because of too many failed attempts');
             }
 
-            Http::timeout(10)->withBasicAuth(config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
+            $response = Http::timeout(10)->withBasicAuth(config('tkw-mailer.services.mailjet.username'), config('tkw-mailer.services.mailjet.password'))
                 ->asJson()
-                ->post(config('tkw-mailer.services.mailjet.url'), [
+                ->post(config('tkw-mailer.services.mailjet.url') . 'a', [
                     'Messages' => [
                         [
                             'From' => [
@@ -60,19 +67,21 @@ class MailJet extends BaseService implements ServiceInterface
                     ]
                 ])->throw();
 
-            MessageSent::dispatch($emailId, 'MailJet');
+            $responseId = json_decode($response->body(), true)['Messages'][0]['To'][0]['MessageID'];
 
-            return true;
+            MessageSent::dispatch($emailId, $this->getServiceIdentifier(), $responseId);
 
-        } catch (\HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
+            return $responseId;
+
+        } catch (HttpClientException | HttpResponseException $serviceUnavailableException) {
 
             $this->rateLimiter->hit('mailjet', Carbon::now()->addMinutes(15));
+            return $this->fallback($emailId);
 
             throw new ServiceUnavailableException($serviceUnavailableException->getMessage());
 
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
-            $this->fallback($emailId);
         }
     }
 

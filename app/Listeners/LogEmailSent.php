@@ -35,6 +35,6 @@ class LogEmailSent
     public function handle(MessageSent $event)
     {
         $email = $this->emailRepository->find($event->getEmailId());
-        Log::info(sprintf('Message with subject \'%s\' was sent with mailservice \'%s\'', $email->subject, $event->getServiceName()));
+        Log::info(sprintf('Message with subject \'%s\' was sent with mailservice \'%s\'', $email->subject, $event->getServiceIdentifier()));
     }
 }
