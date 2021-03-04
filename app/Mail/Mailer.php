@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Events\MessageSent;
 use App\Exceptions\AllServicesFailedException;
 use App\Exceptions\ServiceUnavailableException;
 use App\Fallback\CircuitBreakerInterface;
@@ -29,11 +30,11 @@ class Mailer implements MailerInterface
      * Sends a message with availability of several services in mind
      *
      * @param int $emailId
-     * @return string
+     * @return string|void
      *
      * @throws AllServicesFailedException
      */
-    public function send(int $emailId): string
+    public function send(int $emailId)
     {
         try {
             foreach ($this->getServices() as $serviceIdentifier) {
@@ -42,7 +43,13 @@ class Mailer implements MailerInterface
 
                     $mailService = $this->resolveService($serviceIdentifier);
 
-                    return $mailService->sendMessage($emailId);
+                    Log::info($mailService->getServiceIdentifier());
+
+                    $responseId = $mailService->sendMessage($emailId);
+
+                    MessageSent::dispatch($emailId, $mailService->getServiceIdentifier(), $responseId);
+
+                    return $responseId;
                 }
             }
 
@@ -50,19 +57,17 @@ class Mailer implements MailerInterface
 
         } catch (ServiceUnavailableException $serviceUnavailableException) {
 
-            Log::info('serviceFailedException');
             $this->circuitBreaker->registerFailedAttempt($serviceUnavailableException->getServiceIdentifier());
         } catch (AllServicesFailedException $allServicesFailedException) {
 
             Log::error($allServicesFailedException->getMessage());
             throw new AllServicesFailedException($allServicesFailedException->getMessage());
         } catch (Exception $exception) {
-
             Log::error($exception->getMessage());
         }
     }
 
-    private function getServices(): array
+    public function getServices(): array
     {
         return config('tkw-mailer.settings.order');
     }

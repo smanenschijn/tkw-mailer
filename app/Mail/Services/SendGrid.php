@@ -41,12 +41,7 @@ class SendGrid extends BaseService implements SendGridInterface
                     ]]
                 ])->throw();
 
-            $responseId = $response->header('X-Message-Id');
-
-
-            MessageSent::dispatch($emailId, $this->getServiceIdentifier(), $responseId);
-
-            return $responseId;
+            return $response->header('X-Message-Id');
 
         } catch (HttpRequestException | HttpClientException | HttpResponseException $serviceUnavailableException) {
 

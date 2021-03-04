@@ -60,11 +60,7 @@ class MailJet extends BaseService implements ServiceInterface
                     ]
                 ])->throw();
 
-            $responseId = json_decode($response->body(), true)['Messages'][0]['To'][0]['MessageID'];
-
-            MessageSent::dispatch($emailId, $this->getServiceIdentifier(), $responseId);
-
-            return $responseId;
+            return json_decode($response->body(), true)['Messages'][0]['To'][0]['MessageID'];
 
         } catch (HttpClientException | HttpResponseException $serviceUnavailableException) {
             Log::info('throw unavailable exception');

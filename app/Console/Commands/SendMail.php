@@ -25,6 +25,7 @@ class SendMail extends Command
      * @var string
      */
     protected $description = 'Sends a email through a console command';
+
     /**
      * @var EmailRepositoryInterface
      */

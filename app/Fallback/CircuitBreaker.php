@@ -29,6 +29,6 @@ class CircuitBreaker implements CircuitBreakerInterface
 
     public function registerFailedAttempt(string $serviceIdentifier): void
     {
-        $this->rateLimiter->hit('mailjet', Carbon::now()->addMinutes(5));
+        $this->rateLimiter->hit($serviceIdentifier, Carbon::now()->addMinutes(15));
     }
 }

@@ -4,5 +4,5 @@ namespace App\Mail;
 
 interface MailerInterface
 {
-    public function send(int $email): string;
+    public function send(int $email);
 }
