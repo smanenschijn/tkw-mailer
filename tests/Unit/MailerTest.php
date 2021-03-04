@@ -3,18 +3,13 @@
 namespace Tests\Unit;
 
 use App\Events\MessageSent;
-use App\Exceptions\AllServicesFailedException;
-use App\Fallback\CircuitBreaker;
 use App\Fallback\CircuitBreakerInterface;
 use App\Mail\Mailer;
 use App\Mail\MailerInterface;
 use App\Mail\StubMailer;
 use App\Mail\StubService;
-use App\Repositories\EmailRepositoryInterface;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -27,7 +22,7 @@ class MailerTest extends TestCase
     public function it_throws_an_all_services_failed_exception_after_failed_delivery()
     {
         Http::fake();
-        $this->mock(CircuitBreakerInterface::class, function(MockInterface $mock) {
+        $this->mock(CircuitBreakerInterface::class, function (MockInterface $mock) {
             $mock->shouldReceive('isAvailable')->andReturn(false);
         });
 
@@ -44,7 +39,7 @@ class MailerTest extends TestCase
      */
     public function it_registers_a_failed_attempt_after_a_message_failed()
     {
-        $mock = $this->partialMock(CircuitBreakerInterface::class, function(MockInterface $mock) {
+        $mock = $this->partialMock(CircuitBreakerInterface::class, function (MockInterface $mock) {
             $mock->shouldReceive('isAvailable')->andReturn(true);
             $mock->shouldReceive('registerFailedAttempt')->once();
         });

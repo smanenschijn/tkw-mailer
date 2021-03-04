@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\MessageCreated;
 use App\Jobs\ProcessEmail;
-use App\Repositories\EmailRepositoryInterface;
 
 class SendMessageWithServices
 {

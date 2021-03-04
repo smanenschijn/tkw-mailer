@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Mail\Mailer;
-use app\Mail\MailerInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

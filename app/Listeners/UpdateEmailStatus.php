@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\MessageSent;
 use App\Repositories\EmailRepositoryInterface;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateEmailStatus
 {

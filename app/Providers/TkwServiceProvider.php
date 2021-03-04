@@ -10,7 +10,6 @@ use App\Mail\Services\MailJet;
 use App\Mail\Services\MailJetInterface;
 use App\Mail\Services\SendGrid;
 use App\Mail\Services\SendGridInterface;
-use App\Mail\Services\ServiceInterface;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepositoryInterface;
 use App\Repositories\EmailRepository;

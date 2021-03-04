@@ -17,7 +17,7 @@ class CircuitBreakerTest extends TestCase
         $circuitBreaker = resolve(CircuitBreakerInterface::class);
         $serviceIdentifier = Str::uuid();
 
-        for($i=0;$i <= config('tkw-mailer.rate_limiter.threshold') + 1; $i++) {
+        for ($i = 0; $i <= config('tkw-mailer.rate_limiter.threshold') + 1; $i++) {
             $circuitBreaker->registerFailedAttempt($serviceIdentifier);
         }
 
@@ -32,7 +32,7 @@ class CircuitBreakerTest extends TestCase
         $circuitBreaker = resolve(CircuitBreakerInterface::class);
         $serviceIdentifier = Str::uuid();
 
-        for($i=1;$i <= config('tkw-mailer.rate_limiter.threshold') - 1; $i++) {
+        for ($i = 1; $i <= config('tkw-mailer.rate_limiter.threshold') - 1; $i++) {
             $circuitBreaker->registerFailedAttempt($serviceIdentifier);
         }
 
@@ -47,7 +47,7 @@ class CircuitBreakerTest extends TestCase
         $circuitBreaker = resolve(CircuitBreakerInterface::class);
         $serviceIdentifier = Str::uuid();
 
-        for($i=0;$i <= config('tkw-mailer.rate_limiter.threshold'); $i++) {
+        for ($i = 0; $i <= config('tkw-mailer.rate_limiter.threshold'); $i++) {
             $circuitBreaker->registerFailedAttempt($serviceIdentifier);
         }
 

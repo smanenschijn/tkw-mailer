@@ -12,7 +12,7 @@ class StubMailer extends Mailer implements MailerInterface
         return new StubService();
     }
 
-    public function getServices() : array
+    public function getServices(): array
     {
         return ['stub-service'];
     }

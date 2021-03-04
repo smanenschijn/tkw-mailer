@@ -3,7 +3,6 @@
 namespace App\Mail\Services;
 
 use App\Exceptions\ServiceUnavailableException;
-use App\Mail\Services\ServiceInterface;
 use Illuminate\Support\Str;
 
 class StubService implements ServiceInterface
@@ -14,7 +13,7 @@ class StubService implements ServiceInterface
         return Str::uuid();
     }
 
-    public function sendMessage(int $emailId) : string
+    public function sendMessage(int $emailId): string
     {
         if ($emailId === 1) {
             return Str::uuid();
