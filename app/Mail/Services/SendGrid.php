@@ -2,7 +2,6 @@
 
 namespace App\Mail\Services;
 
-use App\Events\MessageSent;
 use App\Exceptions\ServiceUnavailableException;
 use HttpRequestException;
 use Illuminate\Http\Client\HttpClientException;
