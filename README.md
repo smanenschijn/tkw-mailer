@@ -51,6 +51,12 @@ docker-compose exec app php artisan tkw:mail:send "one@example.com,two@example.c
 
 Just give it a try and enjoy this simple way of sending emails.
 
+## Testing
+Tests have been added to secure the application after changes have been made. To run these simply run this command:
+```
+docker-compose exec app php artisan test
+```
+
 ## Scalability
 This application is easily scalable. Right now it uses a Laravel internal queue worker per instance, but it's easily changed to e.g. Laravel Horizon or Beanstalk. When connecting to the same Redis instance it is even possible for multiple application instances to know about unavailable mail services and to take tries from all seperate instances into account.
 
