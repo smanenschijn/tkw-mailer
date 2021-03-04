@@ -51,7 +51,7 @@ class CircuitBreakerTest extends TestCase
             $circuitBreaker->registerFailedAttempt($serviceIdentifier);
         }
 
-        $this->travel(15)->minutes();
+        //$this->travel(15)->minutes();
 
         $this->assertTrue($circuitBreaker->isAvailable($serviceIdentifier));
     }
